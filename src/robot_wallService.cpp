@@ -76,22 +76,15 @@ void Helper::resetPositionModifyVelocityCallback(){
   				ros::shutdown();
   			break;
   			
-  		  	case 'p':
+  		  	case 'r':
   		
   				client1.waitForExistence();
   				if(client1.call(reset_srv)){
-  					printf("RESET POSITION and VELOCITY");
-   				
-   				msg.pose.pose.position.x = 0.0;
-  				msg.pose.pose.position.y = 0.0;
-  				vel.linear.x = 0.0;
-  				vel.angular.z = 0.0;
-  				pub.publish(msg);
-  				pub2.publish(vel);
+  					ROS_INFO("RESET POSITION and VELOCITY\n");
   				
   				}
   				else{
-				printf("Error in connecting with the server");				
+				ROS_ERROR("Error in connecting with the server");				
   				}
    			break;
    		 	
@@ -99,12 +92,12 @@ void Helper::resetPositionModifyVelocityCallback(){
    		 		vel_srv.request.input = inputChar;
    		 		client2.waitForExistence();
    		 		if(client2.call(vel_srv)){
-   					printf("INCREASING VELOCITY");
+   					ROS_INFO("INCREASING VELOCITY\n");
    					vel_srv.response.acceleration = 40/100;
 					//vel.linear.x += vel_srv.response.acceleration;
 				}
 				else{
-					printf("Error in connecting with UserInputServer");
+					ROS_ERROR("Error in connecting with UserInputServer");
 				}
 			 	break;
    		
@@ -114,12 +107,12 @@ void Helper::resetPositionModifyVelocityCallback(){
    				vel_srv.request.input = inputChar;
    				
    				if(client2.call(vel_srv)){
-   					printf("DECREASING VELOCITY");
+   					ROS_INFO("DECREASING VELOCITY\n");
    					vel_srv.response.acceleration = -40/100;
    					//vel.linear.x -= vel_srv.response.acceleration;
    		 	 	}
    		 	 	else{
-   		 	 		printf("error in connecting with UserInputServer");
+   		 	 		ROS_ERROR("error in connecting with UserInputServer");
    		 	 	}
 				break;
   		 	default: 
@@ -141,10 +134,11 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "reset_node");
 	ros::NodeHandle n;
 	printf( "%s", menu );
-   	Helper *helper = new Helper(&n) ;
+	while(ros::ok()){
+   		Helper *helper = new Helper(&n) ;
+		helper->resetPositionModifyVelocityCallback();
 	
-	
-	ros::spin();
+	}
 	return 0;
 }
 

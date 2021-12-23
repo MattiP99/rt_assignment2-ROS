@@ -143,14 +143,12 @@ set (SRCS2 ${SRCS2} src/robot_wallMain.cpp)
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/second_assignment_node.cpp)
 
-#add_executable(main_node ${SRCS1})
+
 
 add_executable(main_wall_node ${SRCS2})
 add_executable(reset_node src/robot_wallService.cpp)
 
-#add_executable(reset_node src/robot_wallService.cpp)
 
-#add_executable(service_node src/robot_Server.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -176,13 +174,6 @@ target_link_libraries(reset_node
    ${catkin_LIBRARIES}
  )
 
-#target_link_libraries(service_node
-#   ${catkin_LIBRARIES}
-# )
-
-#target_link_libraries(main_node
-#   ${catkin_LIBRARIES}
-# )
  
  target_link_libraries(main_wall_node 
  ${catkin_LIBRARIES}

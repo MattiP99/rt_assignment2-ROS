@@ -16,8 +16,8 @@ using namespace std;
 //#define MAX_SPEED 3
 #define P 10    // Proportional constant for controller
 #define D 8     // Derivative constant for controller
-#define ANGLE_COEF 0.8    // Proportional constant for angle controller
-#define DIRECTION 1 // 1 for wall on the left side of the robot (-1 for the right side).
+#define ANGLE_COEF 1.2   // Proportional constant for angle controller
+#define DIRECTION -1 // 1 for wall on the left side of the robot (-1 for the right side).
 
 #define PUBLISHER_TOPIC "/cmd_vel"
 
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
   //publishing and subscribing
   
   WallFollowing *wallFollowing = new WallFollowing(pubMessage, WALL_DISTANCE, DIRECTION, P, D, 1);
-  ros::ServiceServer srv = n.advertiseService(SERVICE_MESSAGE, &WallFollowing::serviceUserInputCallback, wallFollowing);
+  
   
   //Creating subscriber and publisher
   ros::Subscriber sub = n.subscribe(SUBSCRIBER_TOPIC, SUBSCRIBER_BUFFER_SIZE, &WallFollowing::messageCallback, wallFollowing);
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
   							------
   							acceleration
   */
-  
+  ros::ServiceServer srv = n.advertiseService(SERVICE_MESSAGE, &WallFollowing::serviceUserInputCallback, wallFollowing);
   
   
   

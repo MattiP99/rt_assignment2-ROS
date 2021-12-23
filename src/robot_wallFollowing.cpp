@@ -30,13 +30,20 @@ WallFollowing::~WallFollowing(){}
 bool WallFollowing::serviceUserInputCallback(second_assignment::UserInputService::Request &request, second_assignment::UserInputService::Response &response){
   		
   		geometry_msgs::Twist msg;
-  		if(request.input){ 
-  			DriveSpeed += response.acceleration;
+  		if(request.input == 'w'){ 
+  			
+  			response.acceleration =  40/100;
+  			
+  		}
+  		else if (request.input == 's'){
+  			
+  			response.acceleration =  - 40/100;
+  			
   		}
   		else{
   			ROS_ERROR("Error in receving from client");
   		}
-  		msg.linear.x = DriveSpeed;
+  		
   		publishMessage(0);
   		return true;
 	}
@@ -44,6 +51,8 @@ bool WallFollowing::serviceUserInputCallback(second_assignment::UserInputService
 void WallFollowing::publishMessage(bool from)
 {
 geometry_msgs::Twist msg;
+second_assignment::UserInputService srv;
+
 if (from == 1){
 
   
@@ -55,10 +64,10 @@ if (from == 1){
     	msg.linear.x = 0;
   	}
   	else if (distFront < wallDistance * 2){
-    	msg.linear.x = 0.5*DriveSpeed;
+    	msg.linear.x = 0.5* DriveSpeed;
   	}
   	else if (fabs(angleMin)>1.75){
-    	msg.linear.x = 0.1*DriveSpeed;
+    	msg.linear.x = 0.2* DriveSpeed;
   	} 
   	
   	else {
@@ -69,6 +78,8 @@ if (from == 1){
 }
 else if (from == 0){
 	ROS_INFO("Modifying velocity from service");
+	DriveSpeed = DriveSpeed + srv.response.acceleration;
+	msg.linear.x = DriveSpeed;
 }
   
  pubMessage.publish(msg);
