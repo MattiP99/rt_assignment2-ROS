@@ -11,6 +11,10 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   stage_ros
+  std_msgs
+  geometry_msgs
+  nav_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -54,11 +58,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+   FILES
+   UserInputService.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -68,10 +71,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+   DEPENDENCIES
+   std_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -102,12 +105,12 @@ find_package(catkin REQUIRED COMPONENTS
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
+#catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES second_assignment
-#  CATKIN_DEPENDS roscpp rospy stage_ros
+# LIBRARIES second_assignment
+# CATKIN_DEPENDS roscpp rospy stage_ros geometry_msgs nav_msgs message_generation std_msgs
 #  DEPENDS system_lib
-)
+#)
 
 ###########
 ## Build ##
@@ -125,6 +128,11 @@ include_directories(
 #   src/${PROJECT_NAME}/second_assignment.cpp
 # )
 
+set (SRCS2 ${SRCS2} src/robot_wallFollowing.cpp)
+set (SRCS2 ${SRCS2} src/robot_wallMain.cpp)
+
+
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -134,6 +142,15 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/second_assignment_node.cpp)
+
+#add_executable(main_node ${SRCS1})
+
+add_executable(main_wall_node ${SRCS2})
+add_executable(reset_node src/robot_wallService.cpp)
+
+#add_executable(reset_node src/robot_wallService.cpp)
+
+#add_executable(service_node src/robot_Server.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -145,11 +162,31 @@ include_directories(
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+#add_dependencies(main_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(main_wall_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(reset_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(service_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(reset_node
+   ${catkin_LIBRARIES}
+ )
 
+#target_link_libraries(service_node
+#   ${catkin_LIBRARIES}
+# )
+
+#target_link_libraries(main_node
+#   ${catkin_LIBRARIES}
+# )
+ 
+ target_link_libraries(main_wall_node 
+ ${catkin_LIBRARIES}
+ )
 #############
 ## Install ##
 #############
