@@ -20,8 +20,7 @@ WallFollowing::WallFollowing(ros::Publisher pub, double wallDist, int dir, doubl
   e = 0;
   angleMin = 0;  //angle, at which was measured the shortest distance
   pubMessage = pub;
-  
-  DriveSpeed = 3;
+  DriveSpeed = 2;
   acceleration = 0;
   
   

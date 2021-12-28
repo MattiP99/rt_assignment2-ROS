@@ -42,7 +42,7 @@ public:
 
   void messageCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
   bool serviceUserInputCallback(second_assignment::UserInputService::Request &request, second_assignment::UserInputService::Response &response);
-  bool serviceResetCallback(std_srvs::Empty::Request &request, std_srvs::Empty::Response &response);
+  
   
 
 

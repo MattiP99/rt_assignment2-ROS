@@ -38,18 +38,22 @@ We can choose two option for running this code:
  Project Structure:
  ----------------------------------------------------------------------
  
-  
+ 
+ 
+ <img width="656" alt="assignment2_structure" src="https://user-images.githubusercontent.com/92534255/147602760-054e40f1-8dcc-40e0-b363-57fed975fb6a.PNG">
 
-Three nodes are implemented in order to fullfill the riqueriments:
+
+
+Three nodes are implemented in order to fullfill the requirements:
 
  ° world: already provided for this project. It aims to recreate the complete simulation environment of circuit and robot. 
  
- ° main_wall_node: it aims to guide the robot without bumping into the walls of the circuit. It communicates with world through messages: it sends messages to impose the right speed on the robot and receives information regarding the position of the walls provided by the laser scanners with which the robot is equipped. In addition, it also offers a service that can change the speed of the robot according to the command received.
+ ° main_wall_node: it aims to guide the robot without bumping into the walls of the circuit. It communicates with world through messages: it sends messages to impose the right speed on the robot and it  receives pieces of information regarding the position of the walls provided by the laser scanners which the robot is equipped with. In addition, it also offers a service that can change the speed of the robot according to the command received.
  
  ° user_node: it aims to receive commands from the user and call up the right services.
 
-I created a personal service UserInputService(folder srv) whose aim is to helping the comunication between the user node and the main node. To do so the user has 
-to press a particular input for modifying certain parameters.
+I created a personal service UserInputService(folder srv) whose aim is to help the comunication between the user node and the main node. To do so, the user has 
+to press a particular input to modify certain parameters.
 
 World:
 --------------------------------------------------------------------------------------------
@@ -63,8 +67,8 @@ World:
 
 
 
-The track, designed by our professor, is the following and the car/Robot is the little blue dot
-whose scanner visibility is highlighted with that blue area
+The track, designed by our professor, is the following and the car/Robot is the little blue dot 
+whose scanner visibility is highlighted with this blue area
 
 The world node publishes messages on the base_scan topic. Messages are LaserScan type, from sensor_msg package, and they provide the result of a single scan by the robot's laser sensors.
 
@@ -73,17 +77,45 @@ It also subscribes to the topic cmd_vel to impose a linear and angular velocity 
 main_wall_node:
 ---------------------------------------------------------------------------------------------
 
-This node is in charged of the controll of the car by using a PD controller. Its aim is to move the car through the circuit not allowing this to crash.
-It uses wallFollowing class' methods and variables. It is created to organize the code and the program. 
+This node is in charge of the control of the car by using a PD (Proportional and Derivative) controller. Its aim is to move the car through the circuit preventing it from crashing.
+It uses wallFollowing class' methods and variables and it is created to organize the code and the program. 
 
+  - ros::init
+
+  - ros::Publisher(cmd_vel)
+
+  - WallFollowing *wallfollowing = new WallFollowing(publisher, parameters)
+
+  - ros::subscriber(base_scan, wallfollowing function)
+
+  - ros::server(input_user, wallfollowing function)
+ 
+wallFollowing class.h
+-------------------------------------------------------------------------------------------------
+
+public:
+  - constructor WallFollowing(Publisher, parameters)
+  - distructor ~WallFollowing
+  - publishMessage() Function for publishing
+  - messageCallback(LaserSensor)
+  - serviceUserInputCallback
+  - variables
+  - Publisher
+
+wallFollowing class.cpp
+------------------------------------------------------------------------------------------------- 
+Implementation of all methods of the PD controller and all functions for managing the service UserInputService callback
+
+
+  
 user_node:
 ----------------------------------------------------------------------------------------------
 
-This node is in charged of collecting the input from the user and behaving in consequences of his/her choice. It allows to increase or decrease the velocity of the car, to reset the position of this and to quit the program by the command ros::shutdown.
-A client is implemented here to controll the received message from the server in the main node.
+This node is in charge of collecting the input from the user and it acts accordingly to his/her choice. It allows to increase or decrease the velocity of the car, to reset its position and to quit the program with the command ros::shutdown.
+A client is implemented here to control the received message from the server in the main node.
 This node is helped by the Helper class.
 
-The user interface print on the screen a menu with three choices:
+The user interface prints on the screen a menu with three choices:
 
     "w" : increase velocity
     "s" : decrease velocity
@@ -113,19 +145,34 @@ while(roscore is running)
    key = command read from user
    
    if(key == q)
-      kill this node
+         kill this node
    
    else if(key == r)
          send a request to Empty service
          
    else if(key == w )
-        send a request to UserInputService to incrcease the velocity
+         send a request to UserInputService to incrcease the velocity
       
    else if((key == s)
          send a request to UserInputService to decrcease the velocity
      
    else
-     print(invalid command)
+         print(invalid command)
 
+Helper_class.h
+-----------------------------------------------------------------------------------------------------------------
+	
+    public:
+	- Helper
+	- ~ Helper
+	//Function for the service callback (in charged of evaluating user input)
+	- resetPositionModifyVelocityCallback()
+	
+    private:
+    	- NodeHandle
+    	- Publisher on odom topic
+    	- Publisher on cmd_vel topic
+    	- Client for std_srvs::Emtpy service
+    	- Client for UserInputService 
 
 
