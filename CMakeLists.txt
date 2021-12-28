@@ -146,7 +146,7 @@ set (SRCS2 ${SRCS2} src/robot_wallMain.cpp)
 
 
 add_executable(main_wall_node ${SRCS2})
-add_executable(reset_node src/robot_wallService.cpp)
+add_executable(user_node src/robot_wallService.cpp)
 
 
 
@@ -162,7 +162,7 @@ add_executable(reset_node src/robot_wallService.cpp)
 
 #add_dependencies(main_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(main_wall_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(reset_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(user_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #add_dependencies(service_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
@@ -170,7 +170,7 @@ add_dependencies(reset_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTE
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(reset_node
+target_link_libraries(user_node
    ${catkin_LIBRARIES}
  )
 

@@ -134,7 +134,7 @@ void Helper::resetPositionModifyVelocityCallback(){
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "reset_node");
+	ros::init(argc, argv, "ui_node");
 	ros::NodeHandle n;
 	printf( "%s", menu );
 	//Calling an instance of the class

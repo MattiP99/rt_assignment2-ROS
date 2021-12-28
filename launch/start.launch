@@ -1,5 +1,5 @@
 <launch>
 	<node name="world" pkg="stage_ros" type="stageros" args="$(find second_assignment)/world/my_world.world"/>
 	<node name="controller_node" pkg="second_assignment" type="main_wall_node"/>
-	<node name="reset_node" pkg="second_assignment" type="reset_node" output="screen"/>
+	<node name="ui_node" pkg="second_assignment" type="user_node" output="screen"/>
 </launch>
