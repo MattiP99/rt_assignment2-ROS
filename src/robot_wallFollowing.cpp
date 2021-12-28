@@ -20,44 +20,56 @@ WallFollowing::WallFollowing(ros::Publisher pub, double wallDist, int dir, doubl
   e = 0;
   angleMin = 0;  //angle, at which was measured the shortest distance
   pubMessage = pub;
+  
   DriveSpeed = 3;
+  acceleration = 0;
+  
   
  }
 
+//Distructor
 WallFollowing::~WallFollowing(){}
 
-
+//Function for managing the response input from UserNode
 bool WallFollowing::serviceUserInputCallback(second_assignment::UserInputService::Request &request, second_assignment::UserInputService::Response &response){
   		
   		geometry_msgs::Twist msg;
+  		
   		if(request.input == 'w'){ 
   			
-  			response.acceleration =  40/100;
+  			acceleration = 0.5;
+  			response.acceleration = acceleration;
+  			ROS_INFO("acceleration is %f\n",response.acceleration);
   			
   		}
   		else if (request.input == 's'){
   			
-  			response.acceleration =  - 40/100;
+  			acceleration = -0.5;
+  			response.acceleration = acceleration;
+  			ROS_INFO("acceleration is %f\n",response.acceleration);
   			
   		}
   		else{
   			ROS_ERROR("Error in receving from client");
-  		}
   		
-  		publishMessage(0);
-  		return true;
+  		}
+		
+		DriveSpeed += acceleration;
+		return true;
+  		
 	}
-//Publisher
-void WallFollowing::publishMessage(bool from)
+	
+
+
+//Publisher of the velocity
+void WallFollowing::publishMessage()
 {
-geometry_msgs::Twist msg;
-second_assignment::UserInputService srv;
-
-if (from == 1){
-
-  
-  //preparing message
-  	// NOTA::: puoi considerare due casi... il primo è se la distFront >> 0 allora vai di PD altrimenti vai di laterali control brandequalcosa control Potrebbe non funzionare....
+	geometry_msgs::Twist msg;
+	//second_assignment::UserInputService srv;
+	
+	
+	//preparing message
+  	
   	msg.angular.z = direction*(P*e + D*diffE) + angleCoef * (angleMin - PI*direction/2);    //PD controller
 
   	if (distFront < wallDistance){
@@ -73,22 +85,14 @@ if (from == 1){
   	else {
     	msg.linear.x = DriveSpeed;
   	}
-	
-	
-}
-else if (from == 0){
-	ROS_INFO("Modifying velocity from service");
-	DriveSpeed = DriveSpeed + srv.response.acceleration;
-	msg.linear.x = DriveSpeed;
-}
-  
+
  pubMessage.publish(msg);
   //publishing message
   
 }
 
 
-//Subscriber
+//Subscriber for evaluating obstacles thanks to car lasers
 void WallFollowing::messageCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
   int size = msg->ranges.size();
@@ -116,5 +120,5 @@ void WallFollowing::messageCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   e = distMin - wallDistance;
 
   //Invoking method for publishing message
-  publishMessage(1);
+  publishMessage();
 }

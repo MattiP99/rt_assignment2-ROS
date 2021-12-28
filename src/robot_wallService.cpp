@@ -68,47 +68,50 @@ void Helper::resetPositionModifyVelocityCallback(){
 		
 		
 			
-		// i need to populate the request field of my velocity message vel_srv
+		// I need to populate the request field of my velocity message vel_srv
 	        char inputChar;
    	        scanf("%c", &inputChar);
    		switch(inputChar){
   		  	case 'q':
   				ros::shutdown();
   			break;
-  			
+  			//Reset the position of the car
   		  	case 'r':
-  		
-  				client1.waitForExistence();
-  				if(client1.call(reset_srv)){
-  					ROS_INFO("RESET POSITION and VELOCITY\n");
   				
-  				}
-  				else{
-				ROS_ERROR("Error in connecting with the server");				
-  				}
-   			break;
+  				client1.waitForExistence();
+  					if(client1.call(reset_srv)){
+  						ROS_INFO("RESET POSITION and VELOCITY\n");
+  				
+  					}
+  					else{
+					ROS_ERROR("Error in connecting with the server");				
+  					}
+   				break;
    		 	
-   		 	case 'w':
-   		 		vel_srv.request.input = inputChar;
-   		 		client2.waitForExistence();
-   		 		if(client2.call(vel_srv)){
-   					ROS_INFO("INCREASING VELOCITY\n");
-   					vel_srv.response.acceleration = 40/100;
+   			 //Incrementing the velocity of the car
+   			 case 'w':
+   			 		vel_srv.request.input = inputChar;
+   			 		client2.waitForExistence();
+   			 		if(client2.call(vel_srv)){
+   						ROS_INFO("INCREASING VELOCITY\n");
+   					        printf("acceleration of the car is %f\n",vel_srv.response.acceleration);
 					//vel.linear.x += vel_srv.response.acceleration;
-				}
-				else{
-					ROS_ERROR("Error in connecting with UserInputServer");
-				}
-			 	break;
+					}
+					else{
+						ROS_ERROR("Error in connecting with UserInputServer");
+					}
+				 	break;
    		
+   			//Decrementing the velocity of the car
    			case 's':
-   				
-   				client2.waitForExistence();
    				vel_srv.request.input = inputChar;
+   				client2.waitForExistence();
+   				
    				
    				if(client2.call(vel_srv)){
    					ROS_INFO("DECREASING VELOCITY\n");
-   					vel_srv.response.acceleration = -40/100;
+   					printf("deceleration of the car is %f\n",vel_srv.response.acceleration);
+   					//vel_srv.response.acceleration = -40/100;
    					//vel.linear.x -= vel_srv.response.acceleration;
    		 	 	}
    		 	 	else{
@@ -134,6 +137,7 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "reset_node");
 	ros::NodeHandle n;
 	printf( "%s", menu );
+	//Calling an instance of the class
 	while(ros::ok()){
    		Helper *helper = new Helper(&n) ;
 		helper->resetPositionModifyVelocityCallback();

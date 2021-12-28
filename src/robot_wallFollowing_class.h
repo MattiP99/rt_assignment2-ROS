@@ -5,6 +5,7 @@
 #include "geometry_msgs/Twist.h"
 #include "nav_msgs/Odometry.h"
 #include <std_msgs/String.h>
+#include "std_srvs/Empty.h"
 #include "second_assignment/UserInputService.h"
 
 class WallFollowing
@@ -28,7 +29,7 @@ public:
    * using data in variables (e, diffE, angleMin).
    */
 
-  void publishMessage(bool from);
+  void publishMessage();
   
   
 
@@ -41,6 +42,7 @@ public:
 
   void messageCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
   bool serviceUserInputCallback(second_assignment::UserInputService::Request &request, second_assignment::UserInputService::Response &response);
+  bool serviceResetCallback(std_srvs::Empty::Request &request, std_srvs::Empty::Response &response);
   
 
 
@@ -49,6 +51,7 @@ public:
   double e;            // Difference between desired distance from the wall and actual distance.
   double diffE;     // Derivative element for PD controller;
   double DriveSpeed;     // Maximum speed of robot.
+  double acceleration;
   double P;            // k_P Constant for PD controller.
   double D;            // k_D Constant for PD controller.
   double angleCoef;    // Coefficient for P controller.
